@@ -1,4 +1,11 @@
 # DynaBLASTER
+
+###Dependencies
+
+ - python3
+ - pillow
+ - tkinter
+
 ###Controls:
                 player 1        Player 2
         Up:     Up-Arrow        W
