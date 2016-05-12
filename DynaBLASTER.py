@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 """Program that recreates the multiplayer aspect of the DOS game DynaBlaster.
    Tactfully place bombs against your opponent and become the bomber champ!
    Author: Abel Svoboda
@@ -753,7 +755,7 @@ def main():
     window.configure(background='black')
     window.title("DynaBLASTER")
     window.resizable(0,0) #removes maximize option
-    window.iconbitmap('icon.ico')
+    #window.iconbitmap('icon.ico')
 
     canvas = Canvas(window, width=canvas_width, highlightthickness=0,
                     height=canvas_height, background='#717171')
