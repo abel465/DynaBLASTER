@@ -12,8 +12,8 @@ from random import randint
 from PIL import Image, ImageTk
 
 
-ITEMS = ['+bombs', '+power']
-
+ITEMS = ('+bombs', '+power')
+SOFT_BLOCK_DENSITY = 50 #%
 
 class Graphics(object):
     def __init__(self, canvas, rows, cols, size, window):
@@ -23,24 +23,25 @@ class Graphics(object):
         self.rows = rows*2+1
         self.cols = cols*2+1
         self.size = size/2
-        self.label={}
-        self.label_vars={}
-        self.icons=[]
-        self.icons.append(ImageTk.PhotoImage(file='png/faceicon0.png'))
-        self.icons.append(ImageTk.PhotoImage(file='png/faceicon1.png'))
+        self.label = {}
+        self.label_vars = {}
+        self.icons = (ImageTk.PhotoImage(file='png/faceicon0.png'),
+                      ImageTk.PhotoImage(file='png/faceicon1.png'))
         self.draw_static_grid()
         self.draw_changing_grid()
         self.info_labels()
         self.make_creator_label()
 
     def make_creator_label(self):
-        self.canvas.create_text(self.cols*self.size/2+self.size/2,self.rows*self.size+self.size*2/3+2,text='Created by Abel Svoboda, 08/07/15')
+        self.canvas.create_text(self.cols*self.size/2+self.size/2,
+                                self.rows*self.size+self.size*2/3+2,
+                                text='Created by Abel Svoboda, 08/07/15')
 
     def draw_static_grid(self):
         '''draws the grid that is made at the start of the game'''
         hardblock = PhotoImage(file='gifs/hardblock.gif')
         label = Label(image=hardblock)
-        label.image = hardblock # keep a reference!
+        label.image = hardblock #keeping a reference
         self.regular = {}
         self.absolute = {}
         for col in range(self.cols):
@@ -52,19 +53,13 @@ class Graphics(object):
                 left += .5*self.size
                 top += .5*self.size
 
-                tyle = None
-                if row%2==0 and col%2==0:
-                    tyle = 'hardblock'
-                elif row==0 or col==0:
-                    tyle = 'hardblock'
-                elif row==self.rows-1 or col==self.cols-1:
-                    tyle = 'hardblock'
-
-                if tyle == 'hardblock':
-                    self.absolute[(col-1,row-1)]=self.canvas.create_image(
+                if row%2==0 and col%2==0 or \
+                   row==0 or col==0 or \
+                   row==self.rows-1 or col==self.cols-1: #hardblock
+                    self.absolute[(col-1,row-1)] = self.canvas.create_image(
                         (left+right)/2,(top+bot)/2,image=hardblock)
                 else:
-                    self.regular[(col-1,row-1)]=self.canvas.create_rectangle(
+                    self.regular[(col-1,row-1)] = self.canvas.create_rectangle(
                         left,top,right,bot,fill='#307100',width=0)
 
     def draw_changing_grid(self):
@@ -90,7 +85,7 @@ class Graphics(object):
                     pass
                 elif row==0 or col==0 or row==self.rows-1 or col==self.cols-1:
                     pass
-                elif randint(0,100) <= 50:
+                elif randint(0,100) < SOFT_BLOCK_DENSITY:
                     self.rocks[(col-1,row-1)]=self.canvas.create_image(
                         (left+right)/2,(top+bot)/2,image=softblock)
 
