@@ -1,7 +1,6 @@
 # DynaBLASTER
-## A Python clone of Bomberman
+A Python clone of Bomberman
 
-----
 
 ##Dependencies
 
