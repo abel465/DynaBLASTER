@@ -11,6 +11,8 @@ from time import clock
 from random import randint
 from PIL import Image, ImageTk
 
+import json
+
 
 ITEMS = ['+bombs', '+power']
 
@@ -156,7 +158,6 @@ class Graphics(object):
         button.columnconfigure(10,weight=9)
 
 
-
 class Board(object):
     def __init__(self, canvas, size, num_rows, num_cols, c_width, c_height):
         '''Initialises the board and its attributes'''
@@ -184,6 +185,7 @@ class Board(object):
             line = self.canvas.create_line(x,0,x,self.c_height)
             self.canvas.itemconfig(line, state='hidden')
             self.ver_lines.append(line)
+
 
 class Player(object):
     items = {}
@@ -742,6 +744,9 @@ def pause_game(player1, player2, graphics):
         player1.pause_game()
         player2.pause_game()
 
+def key_release_of(key):
+    key_val = key.strip()[1:-1]   # Strip angle brackets
+    return "<KeyRelease-" + key_val + ">"
 
 def main():
     '''runs the program'''
@@ -767,32 +772,35 @@ def main():
     col=0
     row=0
     player1 = Player(canvas, board, square_width, graphics, col, row)
-    col = graphics.cols-3
-    row = graphics.rows-3
+    col = graphics.cols - 3
+    row = graphics.rows - 3
     player2 = Player(canvas, board, square_width, graphics, col, row)
 
-    window.bind('<KeyRelease-Up>',    lambda event:player1.key_release('Up'))
-    window.bind('<KeyRelease-Down>',  lambda event:player1.key_release('Down'))
-    window.bind('<KeyRelease-Left>',  lambda event:player1.key_release('Left'))
-    window.bind('<KeyRelease-Right>', lambda event:player1.key_release('Right'))
-    window.bind('<Up>',               lambda event:player1.key_press('Up'))
-    window.bind('<Down>',             lambda event:player1.key_press('Down'))
-    window.bind('<Left>',             lambda event:player1.key_press('Left'))
-    window.bind('<Right>',            lambda event:player1.key_press('Right'))
-    window.bind('<Control_R>',        player1.place_bomb)
+    # Import settings from bindings file
+    bindings_file = open('bindings.json')
+    p1_bindings, p2_bindings, gen_bindings = json.load(bindings_file)
 
-    window.bind('<KeyRelease-w>', lambda event:player2.key_release('Up'))
-    window.bind('<KeyRelease-s>', lambda event:player2.key_release('Down'))
-    window.bind('<KeyRelease-a>', lambda event:player2.key_release('Left'))
-    window.bind('<KeyRelease-d>', lambda event:player2.key_release('Right'))
-    window.bind('<w>',            lambda event:player2.key_press('Up'))
-    window.bind('<s>',            lambda event:player2.key_press('Down'))
-    window.bind('<a>',            lambda event:player2.key_press('Left'))
-    window.bind('<d>',            lambda event:player2.key_press('Right'))
-    window.bind('<Control_L>',    player2.place_bomb)
+    window.bind(key_release_of(p1_bindings["Up"]), lambda event:player1.key_release('Up'))
+    window.bind(key_release_of(p1_bindings["Down"]), lambda event:player1.key_release('Down'))
+    window.bind(key_release_of(p1_bindings["Left"]), lambda event:player1.key_release('Left'))
+    window.bind(key_release_of(p1_bindings["Right"]), lambda event:player1.key_release('Right'))
+    window.bind(p1_bindings["Up"], lambda event:player1.key_press('Up'))
+    window.bind(p1_bindings["Down"],lambda event:player1.key_press('Down'))
+    window.bind(p1_bindings["Left"], lambda event:player1.key_press('Left'))
+    window.bind(p1_bindings["Right"], lambda event:player1.key_press('Right'))
+    window.bind(p1_bindings["Bomb"], player1.place_bomb)
 
-    window.bind('<p>', lambda event:pause_game(player1, player2, graphics))
-    window.bind('<Escape>', lambda event:pause_game(player1, player2, graphics))
+    window.bind(key_release_of(p2_bindings["Up"]), lambda event:player2.key_release('Up'))
+    window.bind(key_release_of(p2_bindings["Down"]), lambda event:player2.key_release('Down'))
+    window.bind(key_release_of(p2_bindings["Left"]), lambda event:player2.key_release('Left'))
+    window.bind(key_release_of(p2_bindings["Right"]), lambda event:player2.key_release('Right'))
+    window.bind(p2_bindings["Up"], lambda event:player2.key_press('Up'))
+    window.bind(p2_bindings["Down"], lambda event:player2.key_press('Down'))
+    window.bind(p2_bindings["Left"], lambda event:player2.key_press('Left'))
+    window.bind(p2_bindings["Right"], lambda event:player2.key_press('Right'))
+    window.bind(p2_bindings["Bomb"], player2.place_bomb)
+
+    window.bind(gen_bindings["Pause"], lambda event:pause_game(player1, player2, graphics))
 
     window.mainloop()
 
