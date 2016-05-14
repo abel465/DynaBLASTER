@@ -1,0 +1,19 @@
+[
+  {
+    "Up": "<Up>",
+    "Down": "<Down>",
+    "Left": "<Left>",
+    "Right": "<Right>",
+    "Bomb": "<Control_R>"
+  },
+  {
+    "Up": "<w>",
+    "Down": "<s>",
+    "Left": "<a>",
+    "Right": "<d>",
+    "Bomb": "<Control_L>"
+  },
+  {
+    "Pause": "<p>"
+  }
+]
