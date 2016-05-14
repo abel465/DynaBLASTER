@@ -13,7 +13,7 @@ from PIL import Image, ImageTk
 
 
 ITEMS = ('+bombs', '+power')
-SOFT_BLOCK_DENSITY = 50 #%
+
 
 class Graphics(object):
     def __init__(self, canvas, rows, cols, size, window):
@@ -58,7 +58,7 @@ class Graphics(object):
                    row==self.rows-1 or col==self.cols-1: #hardblock
                     self.absolute[(col-1,row-1)] = self.canvas.create_image(
                         (left+right)/2,(top+bot)/2,image=hardblock)
-                else:
+                else: #walkable
                     self.regular[(col-1,row-1)] = self.canvas.create_rectangle(
                         left,top,right,bot,fill='#307100',width=0)
 
@@ -66,7 +66,7 @@ class Graphics(object):
         '''draws the grid that is made at the start of each round'''
         softblock = PhotoImage(file='gifs/softblock.gif')
         label = Label(image=softblock)
-        label.image = softblock # keep a reference!
+        label.image = softblock #keeping a reference
         self.rocks = {}
         for col in range(self.cols):
             for row in range(self.rows):
@@ -77,29 +77,26 @@ class Graphics(object):
                 left += .5*self.size
                 top += .5*self.size
 
-                if (row==1 or row==2) and (col==1 or col==2):
+                if (row==1 or row==2) and (col==1 or col==2) or \
+                   (row==self.rows-2 or row==self.rows-3) and (col==self.cols-2 or col==self.cols-3) or \
+                   row%2==0 and col%2==0 or \
+                   row==0 or col==0 or row==self.rows-1 or col==self.cols-1:
                     pass
-                elif (row==self.rows-2 or row==self.rows-3) and (col==self.cols-2 or col==self.cols-3):
-                    pass
-                elif row%2==0 and col%2==0:
-                    pass
-                elif row==0 or col==0 or row==self.rows-1 or col==self.cols-1:
-                    pass
-                elif randint(0,100) < SOFT_BLOCK_DENSITY:
-                    self.rocks[(col-1,row-1)]=self.canvas.create_image(
+                elif randint(0,100) < 50: #soft block density
+                    self.rocks[(col-1,row-1)] = self.canvas.create_image(
                         (left+right)/2,(top+bot)/2,image=softblock)
 
     def info_labels(self):
         '''creates some labels on the UI'''
-        self.time_var=StringVar()
+        self.time_var = StringVar()
         self.time_var.set(0)
-        time_label=Label(self.window,textvariable=self.time_var,
-                         fg='white', bg='black',
-                         font=('DINPro-Black',20), width=8)
+        time_label = Label(self.window,textvariable=self.time_var,
+                           fg='white', bg='black',
+                           font=('DINPro-Black',20), width=8)
         time_label.grid(row=0,column=2)
-        self.pause_label=Label(self.window,text='PAUSE',
-                               fg='white',bg='black',
-                               font=('DINPro-Black',20),width=8)
+        self.pause_label = Label(self.window,text='PAUSE',
+                                 fg='white',bg='black',
+                                 font=('DINPro-Black',20),width=8)
 
     def pause_game(self):
         '''changes the UI to show the game is paused'''
@@ -129,7 +126,7 @@ class Graphics(object):
         '''creates a score counter for a player'''
         col = player_num*3
         string = 'player'+str(player_num+1)
-        self.label_vars[string]=IntVar()
+        self.label_vars[string] = IntVar()
         self.label_vars[string].set(0)
         self.label[string] = []
         self.label[string].append(Label(self.window, image=self.icons[player_num]))
@@ -218,10 +215,9 @@ class Player(object):
         self.time = 0
         #bomb images
         self.bombdrop0 = ImageTk.PhotoImage(file='png/bombdrop0.png')
-        self.bomb_images=[]
-        self.bomb_images.append(ImageTk.PhotoImage(file='png/bombdrop0.png'))
-        self.bomb_images.append(ImageTk.PhotoImage(file='png/bombdrop1.png'))
-        self.bomb_images.append(ImageTk.PhotoImage(file='png/bombdrop2.png'))
+        self.bomb_images = [ImageTk.PhotoImage(file='png/bombdrop0.png'),
+                            ImageTk.PhotoImage(file='png/bombdrop1.png'),
+                            ImageTk.PhotoImage(file='png/bombdrop2.png')]
         #player images
         self.positions = ['forw','back','right','left']
         self.position = None#'forw'
@@ -492,7 +488,7 @@ class Player(object):
         '''resets the round to play a new round'''
         for i in self.bombs:
             self.canvas.delete(self.bombs[i])
-        self.bombs={}
+        self.bombs = {}
         for i in Player.items:
             for item in Player.items[i]:
                 self.canvas.delete(Player.items[i][item])
@@ -751,6 +747,7 @@ def main():
     window.title("DynaBLASTER")
     window.resizable(0,0) #removes maximize option
     #window.iconbitmap('icon.ico')
+    #window.tk.call('tk', 'scaling', 20.0)
 
     canvas = Canvas(window, width=canvas_width, highlightthickness=0,
                     height=canvas_height, background='#717171')
