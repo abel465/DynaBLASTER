@@ -1,27 +1,31 @@
 # DynaBLASTER
+A Python clone of Bomberman
 
-###Dependencies
 
- - python3
- - pillow
- - tkinter
+##Dependencies
 
-###Controls:
-                player 1        Player 2
-        Up:     Up-Arrow        W
-        Down:   Down-Arrow      S
-        Left:   Left-Arrow      A
-        Right:  Right-Arrow     D
-        Bomb:   Right-Ctrl      Left-Ctrl
+ - Python 3
+ - Pillow 
+ - TKinter
+
+##Controls
+
+| Action     | Player 1      | Player 2     |
+|------------|---------------|--------------|
+| Up         | Up Arrow      | W            |
+| Down       | Down Arrow    | S            |
+| Left       | Left Arrow    | A            |
+| Right      | Right Arrow   | D            |
+| Place Bomb | Right Control | Left Control |    
+| Pause      | P             |              |
+| Rematch    | Control       |              |
         
-    Pause:     P
-    Rematch:   Ctrl
-        
-###Features include:
+##Features include:
 
  - 2 player local multiplayer on same keyboard
  - Bomb capacity upgrade
  - Bomb power upgrade
 
-###Known Issues:
- - If a button that moves the player is being pressed and then the button to move in the opposite direction is pressed, the player will stop
+##In the works:
+
+- Multiplayer with the Python sockets module.
